@@ -1,0 +1,22 @@
+이미지 캡처 방식에서 숫자 데이터 차트로 변경하는 파일입니다.
+
+교체할 파일
+- update.py
+- index.html
+- requirements.txt
+- data.json
+- .github/workflows/update.yml
+
+적용 순서
+1. GitHub 저장소 Code → Add file → Upload files
+2. update.py, index.html, requirements.txt, data.json 업로드
+3. .github/workflows/update.yml도 새 파일로 교체
+4. Commit changes
+5. Settings → Pages → Source → GitHub Actions
+6. Settings → Actions → General
+7. Workflow permissions → Read and write permissions 선택 후 Save
+8. Actions → 코스피 야간선물 데이터 자동 갱신
+9. Run workflow 실행
+10. build와 deploy 성공 후 Pages와 노션 새로고침
+
+기존 chart.png는 더 이상 사용하지 않으므로 삭제해도 됩니다.
