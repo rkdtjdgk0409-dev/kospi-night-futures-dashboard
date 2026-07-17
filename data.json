@@ -1,13 +1,17 @@
 {
   "title": "코스피 야간선물",
-  "statusText": "첫 데이터 수집 전",
+  "statusText": "첫 자동 갱신을 기다리는 중",
   "price": 0,
   "change": 0,
   "changeRate": 0,
   "updatedAt": "아직 갱신되지 않음",
-  "collectionMethod": "숫자 데이터 차트",
+  "collectionMethod": "원본 차트 전체 기간",
   "extractionMethod": "initial",
   "sourceName": "Hang on!",
   "sourceUrl": "https://www.hangon.co.kr/kospi-night-futures",
+  "periodStart": null,
+  "periodEnd": null,
+  "pointCount": 0,
   "rows": []
 }
+
