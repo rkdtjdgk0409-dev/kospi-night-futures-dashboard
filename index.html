@@ -194,6 +194,40 @@
       return [low - pad, high + pad];
     }
 
+    function chartTime(value) {
+      const date = new Date(value);
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        hourCycle: "h23",
+        timeZone: "Asia/Seoul"
+      }).formatToParts(date);
+
+      const get = type => parts.find(part => part.type === type)?.value || "";
+      return `${get("month")}.${get("day")} ${get("hour")}:${get("minute")}`;
+    }
+
+    function chartTicks(rows, maximum = 6) {
+      const count = Math.min(maximum, rows.length);
+
+      if (count <= 1) {
+        return { values: [0], labels: [chartTime(rows[0].time)] };
+      }
+
+      const values = Array.from(
+        { length: count },
+        (_, index) => Math.round(index * (rows.length - 1) / (count - 1))
+      ).filter((value, index, array) => index === 0 || value !== array[index - 1]);
+
+      return {
+        values,
+        labels: values.map(index => chartTime(rows[index].time))
+      };
+    }
+
     function renderChart(data) {
       const rows = Array.isArray(data.rows) ? data.rows : [];
 
@@ -207,16 +241,19 @@
       const line = isDown ? "#347dff" : "#ff3d4d";
       const fill = isDown ? "rgba(52,125,255,.09)" : "rgba(255,61,77,.09)";
       const range = chartRange(rows);
+      const ticks = chartTicks(rows);
+      const positions = rows.map((_, index) => index);
 
       Plotly.newPlot("chart", [{
         type: "scatter",
         mode: "lines",
-        x: rows.map(row => row.time),
+        x: positions,
         y: rows.map(row => row.price),
+        customdata: rows.map(row => chartTime(row.time)),
         line: { color: line, width: 2.25, shape: "linear" },
         fill: "tozeroy",
         fillcolor: fill,
-        hovertemplate: "%{x|%m.%d %H:%M}<br><b>%{y:,.2f}</b><extra></extra>"
+        hovertemplate: "%{customdata}<br><b>%{y:,.2f}</b><extra></extra>"
       }], {
         margin: { l: 51, r: 16, t: 24, b: 42 },
         paper_bgcolor: "rgba(0,0,0,0)",
@@ -227,10 +264,12 @@
         xaxis: {
           showgrid: false,
           zeroline: false,
-          tickformat: "%m.%d %H:%M",
-          nticks: 6,
+          type: "linear",
+          tickmode: "array",
+          tickvals: ticks.values,
+          ticktext: ticks.labels,
           fixedrange: true,
-          range: [rows[0].time, rows[rows.length - 1].time]
+          range: [0, Math.max(rows.length - 1, 1)]
         },
         yaxis: {
           side: "left",
@@ -280,4 +319,3 @@
   </script>
 </body>
 </html>
-
