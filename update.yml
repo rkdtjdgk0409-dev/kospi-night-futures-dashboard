@@ -4,9 +4,8 @@ on:
   workflow_dispatch:
 
   schedule:
-    # KST 18:02~익일 05:57, 5분마다 실행합니다.
-    # GitHub Actions의 cron은 UTC 기준이므로 KST보다 9시간 뺍니다.
-    - cron: "2-57/5 9-20 * * *"
+    # 매일 정각과 30분에 실행
+    - cron: "0,30 * * * *"
 
 permissions:
   contents: read
@@ -29,18 +28,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
 
-      - name: 필요한 도구 설치
-        run: pip install -r requirements.txt
-
-      - name: 원본 전체 차트 데이터 가져오기
+      - name: 코스피 야간선물 원본 데이터 가져오기
         run: python update.py
 
       - name: 배포 폴더 만들기
         run: |
           mkdir -p site
-          cp index.html data.json .nojekyll site/
+          cp index.html data.json site/
+          touch site/.nojekyll
 
       - name: GitHub Pages 설정
         uses: actions/configure-pages@v5
@@ -61,4 +57,3 @@ jobs:
       - name: GitHub Pages 배포
         id: deployment
         uses: actions/deploy-pages@v4
-
